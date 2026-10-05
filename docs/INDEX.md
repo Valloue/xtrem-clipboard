@@ -1,8 +1,8 @@
-# INDEX — documentation Xtrem Copy
+# INDEX — documentation Xtrem Clipboard
 
 | Doc | Rôle |
 |-----|------|
-| GitHub | https://github.com/Valloue/xtrem-copy (public) |
+| GitHub | https://github.com/Valloue/xtrem-clipboard (public) |
 | `../PROJECT_CONTEXT.md` | Où on en est, version, prochaine étape |
 | `TODO.md` | Checklist live + Questions |
 | `DECISIONS.md` | Décisions figées `D-*` |
@@ -10,7 +10,7 @@
 | `ARCHITECTURE.md` | Flux app |
 | `FEATURES.md` | Fonctionnalités |
 | `DEPENDENCIES.md` | NuGet / deps |
-| `modules/XtremCopy.md` | Fiche produit |
+| `modules/XtremClipboard.md` | Fiche produit |
 | `files/` | Fiches par fichier / service |
 
 ## Rules (`.cursor/rules/`)

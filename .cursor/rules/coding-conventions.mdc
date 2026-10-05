@@ -1,11 +1,11 @@
 ---
-description: Conventions C# WinUI 3 MVVM pour Xtrem Copy
+description: Conventions C# WinUI 3 MVVM pour Xtrem Clipboard
 alwaysApply: true
 ---
 
-# Conventions de code Xtrem Copy
+# Conventions de code Xtrem Clipboard
 
-## Stack (cible) — **D-APP-COPY**, **D-PLAT**
+## Stack (cible) — **D-APP-CLIPBOARD**, **D-PLAT**
 
 - **C#** · **WinUI 3** · **.NET 8** · Windows App SDK
 - Unpackaged, self-contained, publish **x64**, **`PublishTrimmed=false`** (**D-UNPACK**, **D-PUB-NOTRIM**)

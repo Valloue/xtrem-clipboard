@@ -1,4 +1,4 @@
-# FEATURES — Xtrem Copy
+# FEATURES — Xtrem Clipboard
 
 ## V1 (cible)
 

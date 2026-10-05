@@ -1,4 +1,4 @@
-# Module — Xtrem Copy
+# Module — Xtrem Clipboard
 
 ## Rôle
 
@@ -23,4 +23,4 @@ Remplacer l’historique du presse-papiers Windows par une app Fluent (WinUI 3) 
 
 ## Décisions liées
 
-**D-APP-COPY**, **D-CLIP-HISTORY**, **D-CLIP-V1**, **D-CLIP-HOTKEY**, **D-CLIP-LOCAL**, **D-CLIP-PRIVACY**, **D-UI-SHELL**, **D-UI-ACCENT**, **D-PLAT**.
+**D-APP-CLIPBOARD**, **D-CLIP-HISTORY**, **D-CLIP-V1**, **D-CLIP-HOTKEY**, **D-CLIP-LOCAL**, **D-CLIP-PRIVACY**, **D-UI-SHELL**, **D-UI-ACCENT**, **D-PLAT**.

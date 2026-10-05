@@ -1,9 +1,9 @@
 ---
-description: Suivi de contexte Xtrem Copy — lecture CONTEXT avant toute tâche
+description: Suivi de contexte Xtrem Clipboard — lecture CONTEXT avant toute tâche
 alwaysApply: true
 ---
 
-# Suivi de contexte Xtrem Copy
+# Suivi de contexte Xtrem Clipboard
 
 Objectif : reprendre l’app sur n’importe quel PC / IA (Nextcloud), **sans** l’historique Cursor.
 
@@ -26,8 +26,8 @@ Sources de vérité :
 
 - **Interdit** de modifier ToolBox / `Xtrem agent` sans autorisation **explicite**.
 - **Interdit** de modifier le dépôt **Xtrem Rec** depuis ce workspace sans demande **explicite**.
-- Ce dépôt = app **Xtrem Copy** autonome (**D-APP-COPY**).
-- Open source : remote GitHub public **https://github.com/Valloue/xtrem-copy** (**D-OPENSOURCE**, **D-LICENSE-MIT**).
+- Ce dépôt = app **Xtrem Clipboard** autonome (**D-APP-CLIPBOARD**).
+- Open source : remote GitHub public **https://github.com/Valloue/xtrem-clipboard** (**D-OPENSOURCE**, **D-LICENSE-MIT**).
 
 ## APRÈS CHAQUE modification (même tour)
 

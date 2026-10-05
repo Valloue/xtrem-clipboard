@@ -1,15 +1,15 @@
 ﻿---
-description: Numérotation SemVer Xtrem Copy (patch / minor / major)
+description: Numérotation SemVer Xtrem Clipboard (patch / minor / major)
 alwaysApply: true
 ---
 
-# Versionnement — Xtrem Copy (**D-VERSION**)
+# Versionnement — Xtrem Clipboard (**D-VERSION**)
 
 ## Dernier numéro
 
-Source de vérité affichée : ligne **Version** de `PROJECT_CONTEXT.md` (alignée avec `XtremCopy.csproj` `<Version>`, `Package.appxmanifest`, `Installer/XtremCopy.iss` **quand ils existent**).
+Source de vérité affichée : ligne **Version** de `PROJECT_CONTEXT.md` (alignée avec `XtremClipboard.csproj` `<Version>`, `Package.appxmanifest`, `Installer/XtremClipboard.iss` **quand ils existent**).
 
-**Courant : 0.1.2**
+**Courant : 0.2.0**
 
 ## Schéma (on ne change que le « x »)
 

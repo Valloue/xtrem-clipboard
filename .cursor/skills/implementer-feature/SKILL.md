@@ -1,11 +1,11 @@
 ---
 name: implementer-feature
 description: >-
-  Implemente une fonctionnalite Xtrem Copy (WinUI 3, MVVM, presse-papiers)
+  Implemente une fonctionnalite Xtrem Clipboard (WinUI 3, MVVM, presse-papiers)
   en respectant DECISIONS, Fluent Design, et la sync docs obligatoire.
 ---
 
-# Implémenter une feature — Xtrem Copy
+# Implémenter une feature — Xtrem Clipboard
 
 ## Quand
 
@@ -13,8 +13,8 @@ Ajouter / modifier un écran, service clipboard, hotkey, stockage, option UX Cop
 
 ## Prérequis
 
-1. Lire CONTEXT + **TODO** + DECISIONS + HANDOFF + `docs/modules/XtremCopy.md`.
-2. Respecter **D-APP-COPY**, **D-PLAT**, **D-UI-SHELL**, **D-UI-ACCENT**, **D-CLIP-HISTORY**, **D-CLIP-V1**, **D-CLIP-HOTKEY**, **D-CLIP-LOCAL**, **D-CLIP-PRIVACY**, **D-ISO-SUITE**.
+1. Lire CONTEXT + **TODO** + DECISIONS + HANDOFF + `docs/modules/XtremClipboard.md`.
+2. Respecter **D-APP-CLIPBOARD**, **D-PLAT**, **D-UI-SHELL**, **D-UI-ACCENT**, **D-CLIP-HISTORY**, **D-CLIP-V1**, **D-CLIP-HOTKEY**, **D-CLIP-LOCAL**, **D-CLIP-PRIVACY**, **D-ISO-SUITE**.
 3. Ne pas modifier ToolBox ni Xtrem Rec.
 4. Ne jamais logger le contenu clipboard en clair.
 

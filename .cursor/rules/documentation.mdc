@@ -1,9 +1,9 @@
 ---
-description: Documentation obligatoire Xtrem Copy (docs/ + CONTEXT)
+description: Documentation obligatoire Xtrem Clipboard (docs/ + CONTEXT)
 alwaysApply: true
 ---
 
-# Documentation projet Xtrem Copy
+# Documentation projet Xtrem Clipboard
 
 Documenter **tout** ce que l’IA crée ou modifie pour qu’une session froide soit efficace.
 
@@ -23,8 +23,8 @@ Lire : `PROJECT_CONTEXT.md` → `docs/TODO.md` → `docs/DECISIONS.md` → `docs
 | Piège / reprise | `docs/HANDOFF.md` |
 | Deps NuGet | `docs/DEPENDENCIES.md` |
 | Index | `docs/INDEX.md` |
-| Produit / UI shell | `docs/modules/XtremCopy.md` + **D-UI-SHELL** + **D-UI-ACCENT** |
-| Presse-papiers / hotkey / privacy | **D-CLIP-*** + `docs/modules/XtremCopy.md` + `docs/files/` |
+| Produit / UI shell | `docs/modules/XtremClipboard.md` + **D-UI-SHELL** + **D-UI-ACCENT** |
+| Presse-papiers / hotkey / privacy | **D-CLIP-*** + `docs/modules/XtremClipboard.md` + `docs/files/` |
 | Numéro de version | **D-VERSION** + `versioning.mdc` + ligne Version de `PROJECT_CONTEXT.md` |
 
 ### Interdit

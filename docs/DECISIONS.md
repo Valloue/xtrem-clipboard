@@ -1,4 +1,4 @@
-﻿# DECISIONS — Xtrem Copy
+﻿# DECISIONS — Xtrem Clipboard
 
 Décisions durables. Ne pas contredire sans demande explicite de révision.
 
@@ -6,7 +6,7 @@ Décisions durables. Ne pas contredire sans demande explicite de révision.
 
 | ID | Décision |
 |----|----------|
-| **D-APP-COPY** | Ce dépôt = app **Xtrem Copy** (historique presse-papiers), autonome. |
+| **D-APP-CLIPBOARD** | Ce dépôt = app **Xtrem Clipboard** (historique presse-papiers), autonome. Remplace l’ancien id `D-APP-COPY` / nom « Xtrem Copy ». |
 | **D-ISO-SUITE** | Ne pas modifier ToolBox ni **Xtrem Rec** depuis ce workspace sans demande explicite. |
 | **D-FR** / **D-CODE** | UI + assistant en français ; code (idents) en anglais ; commentaires en français. |
 | **D-OPENSOURCE** | Projet **open source** sur GitHub (dépôt public). |
@@ -34,7 +34,7 @@ Décisions durables. Ne pas contredire sans demande explicite de révision.
 
 | ID | Décision |
 |----|----------|
-| **D-CLIP-HISTORY** | Remplacer l’historique Windows (Win+V) par Xtrem Copy. |
+| **D-CLIP-HISTORY** | Remplacer l’historique Windows (Win+V) par Xtrem Clipboard. |
 | **D-CLIP-V1** | V1 = texte Unicode + images ; épingler ; recherche. |
 | **D-CLIP-HOTKEY** | Raccourci global configurable pour ouvrir l’historique. |
 | **D-CLIP-LOCAL** | Stockage LocalAppData uniquement ; pas de cloud V1. |

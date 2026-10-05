@@ -1,9 +1,9 @@
 ---
-description: Invariants presse-papiers Xtrem Copy (écoute, stockage, hotkey, vie privée)
+description: Invariants presse-papiers Xtrem Clipboard (écoute, stockage, hotkey, vie privée)
 alwaysApply: true
 ---
 
-# Presse-papiers — Xtrem Copy (**D-CLIP-HISTORY**)
+# Presse-papiers — Xtrem Clipboard (**D-CLIP-HISTORY**)
 
 Remplace l’historique Windows (Win+V) : écoute, historique local, popup Fluent, coller.
 
@@ -21,7 +21,7 @@ Remplace l’historique Windows (Win+V) : écoute, historique local, popup Fluen
 
 ## Stockage (**D-CLIP-LOCAL**)
 
-- Données sous LocalAppData (`…\XtremCopy\`) — textes + blobs images
+- Données sous LocalAppData (`…\XtremClipboard\`) — textes + blobs images
 - Pas de sync cloud V1 ; pas d’envoi réseau du contenu clipboard
 
 ## Vie privée (**D-CLIP-PRIVACY**)

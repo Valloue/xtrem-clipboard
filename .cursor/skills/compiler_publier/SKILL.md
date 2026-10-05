@@ -1,11 +1,11 @@
 ---
 name: compiler_publier
 description: >-
-  RESERVE — Setup Xtrem Copy pas encore en place. Ne pas compiler/publier tant
+  RESERVE — Setup Xtrem Clipboard pas encore en place. Ne pas compiler/publier tant
   que le scaffold + Installer n existent pas. Voir docs/TODO.md T-SETUP-*.
 ---
 
-# compiler_publier — Xtrem Copy (réservé)
+# compiler_publier — Xtrem Clipboard (réservé)
 
 Pas encore de `BUILD-SETUP.bat` / Inno / `versions.json` pour Copy.
 

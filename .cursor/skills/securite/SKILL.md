@@ -1,12 +1,12 @@
 ---
 name: securite
 description: >-
-  Audit et durcissement de securite Xtrem Copy — app WinUI 3 / C#, historique
+  Audit et durcissement de securite Xtrem Clipboard — app WinUI 3 / C#, historique
   presse-papiers local, hotkey, stockage LocalAppData, logs. A declencher pour
   audit securite, privacy clipboard, revue stockage, hooks, ou chaine de build.
 ---
 
-# Sécurité — client Xtrem Copy
+# Sécurité — client Xtrem Clipboard
 
 ## Règles non négociables
 

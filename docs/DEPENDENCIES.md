@@ -1,4 +1,4 @@
-# DEPENDENCIES — Xtrem Copy
+# DEPENDENCIES — Xtrem Clipboard
 
 ## Runtime cible
 

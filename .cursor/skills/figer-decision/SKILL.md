@@ -5,7 +5,7 @@ description: >-
   (id D-*), aligne les rules .mdc si besoin, met a jour PROJECT_CONTEXT.
 ---
 
-# Figer une décision — Xtrem Copy
+# Figer une décision — Xtrem Clipboard
 
 ## Quand
 

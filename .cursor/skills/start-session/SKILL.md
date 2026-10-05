@@ -1,11 +1,11 @@
 ---
 name: start-session
 description: >-
-  Phase d'impregnation lecture seule pour demarrer une session IA sur Xtrem Copy :
+  Phase d'impregnation lecture seule pour demarrer une session IA sur Xtrem Clipboard :
   cartographie, docs, rules, skills, code, dette. Aucune modif tant que non valide.
 ---
 
-# Start session — Xtrem Copy
+# Start session — Xtrem Clipboard
 
 ## Quand
 
@@ -22,7 +22,7 @@ Nouvelle session, imprégnation, prise de contexte, « lis le projet avant de co
 1. `PROJECT_CONTEXT.md`
 2. `docs/TODO.md` (Focus / P0 — skill **`todo`**)
 3. `docs/INDEX.md` → DECISIONS → HANDOFF → ARCHITECTURE → FEATURES → DEPENDENCIES
-4. `docs/modules/XtremCopy.md` + fiches `docs/files/` utiles
+4. `docs/modules/XtremClipboard.md` + fiches `docs/files/` utiles
 5. `.cursor/rules/*.mdc` + `.cursor/skills/*/SKILL.md`
 6. Arborescence code (`Models/`, `Services/`, `ViewModels/`, `Pages/` — quand présents)
 

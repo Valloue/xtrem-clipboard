@@ -1,4 +1,4 @@
-# ARCHITECTURE — Xtrem Copy
+# ARCHITECTURE — Xtrem Clipboard
 
 ## Cible (V1)
 

@@ -1,16 +1,16 @@
-# TODO — Xtrem Copy
+# TODO — Xtrem Clipboard
 
-**Version :** 0.1.2  
+**Version :** 0.2.0  
 **Date :** 05/10/2026  
 **Focus :** Scaffold WinUI 3  
 **Bloqueur :** aucun  
-**Dernière action :** Repo GitHub public `Valloue/xtrem-copy` créé + push `main`
+**Dernière action :** Renommage produit → **Xtrem Clipboard** (dossier, docs, rules, GitHub)
 
 ## P0
 
-- [ ] `T-CLIP-SCAFFOLD` — Créer solution WinUI 3 unpackaged `XtremCopy` (.NET 8, x64)
+- [ ] `T-CLIP-SCAFFOLD` — Créer solution WinUI 3 unpackaged `XtremClipboard` (.NET 8, x64)
   - **Questions**
-    - Confirmer le nom d’assembly / exe `XtremCopy` ?
+    - Confirmer le nom d’assembly / exe `XtremClipboard` ?
     - Faut-il déjà un projet Installer Inno dès le scaffold ?
 - [ ] `T-CLIP-LISTEN` — Service d’écoute des changements presse-papiers (texte + image)
   - **Questions**
@@ -36,9 +36,10 @@
 
 ## Fait
 
-- [x] `T-RULES-COPY` — Rules / skills / docs skeleton recentrés sur Xtrem Copy (05/10/2026)
+- [x] `T-RULES-COPY` — Rules / skills / docs skeleton recentrés (05/10/2026)
 - [x] `T-OSS-PREP` — LICENSE MIT + README + .gitignore + **D-OPENSOURCE** (05/10/2026)
-- [x] `T-GH-REMOTE` — Dépôt public https://github.com/Valloue/xtrem-copy + push `main` (05/10/2026)
+- [x] `T-GH-REMOTE` — Dépôt public https://github.com/Valloue/xtrem-clipboard + push `main` (05/10/2026)
+- [x] `T-RENAME-CLIPBOARD` — Renommage Xtrem Copy → **Xtrem Clipboard** (docs, rules, repo, dossier) (05/10/2026)
 
 ## Hors
 

@@ -1,13 +1,13 @@
 ---
 name: todo
 description: >-
-  Lit et met a jour la liste de taches live Xtrem Copy (docs/TODO.md).
+  Lit et met a jour la liste de taches live Xtrem Clipboard (docs/TODO.md).
   A utiliser au /todo, todo, todolist, ce qui reste, ce qui est fait,
   on en est ou, marquer fait, ajouter une tache, ou pour reprendre
   le travail. Inclut les Questions ouvertes sous chaque tache.
 ---
 
-# Todo — lire / mettre à jour (Xtrem Copy)
+# Todo — lire / mettre à jour (Xtrem Clipboard)
 
 Fichier unique : **`docs/TODO.md`**. Pas de secrets.
 
