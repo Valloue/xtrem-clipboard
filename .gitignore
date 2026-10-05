@@ -1,3 +1,9 @@
+# Privé / local (non publié sur GitHub)
+.cursor/
+docs/
+LICENSE
+PROJECT_CONTEXT.md
+
 # Build
 bin/
 obj/

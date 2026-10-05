@@ -2,7 +2,7 @@
 
 Historique de presse-papiers pour Windows — alternative Fluent à Win+V.
 
-**Dépôt :** https://github.com/Valloue/xtrem-clipboard (public, MIT)
+**Dépôt :** https://github.com/Valloue/xtrem-clipboard (public)
 
 **Statut :** cadrage / démarrage (pas encore d’application compilable).
 
@@ -22,8 +22,4 @@ Historique de presse-papiers pour Windows — alternative Fluent à Win+V.
 
 ## Licence
 
-[MIT](LICENSE) — projet **open source**.
-
-## Documentation
-
-Voir [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md) et [`docs/INDEX.md`](docs/INDEX.md).
+MIT — projet **open source**.
