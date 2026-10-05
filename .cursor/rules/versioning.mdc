@@ -1,0 +1,35 @@
+﻿---
+description: Numérotation SemVer Xtrem Copy (patch / minor / major)
+alwaysApply: true
+---
+
+# Versionnement — Xtrem Copy (**D-VERSION**)
+
+## Dernier numéro
+
+Source de vérité affichée : ligne **Version** de `PROJECT_CONTEXT.md` (alignée avec `XtremCopy.csproj` `<Version>`, `Package.appxmanifest`, `Installer/XtremCopy.iss` **quand ils existent**).
+
+**Courant : 0.1.1**
+
+## Schéma (on ne change que le « x »)
+
+| Type | Forme | Plages | Quand |
+|------|-------|--------|-------|
+| Mise à jour / correctif / docs / rules | `n.n.x` | `n.n.0` → `n.n.999` | Défaut |
+| Petit ajout de fonctionnalité | `n.x.n` | `n.0.n` → `n.99.n` | Feature |
+| Changement de génération | `x.n.n` | `0.n.n` → ∞ | Rupture / major |
+
+Ex. depuis `0.1.0` : patch → `0.1.1` ; minor → `0.2.0` ; major → `1.0.0`.
+
+## Obligation IA
+
+1. **Chaque réponse avec écriture disque** : incrémenter le bon segment **avant** de terminer ; maj `PROJECT_CONTEXT.md` (+ csproj / manifest / iss s’ils existent).
+2. **Réponse lecture seule** : **pas** d’incrément.
+3. Compilation / Setup : compiler **uniquement** avec le numéro affiché.
+4. Dépassement patch `999` → minor ; minor `99` → major.
+
+## Interdit
+
+- Compiler avec une version ≠ numéro affiché
+- Laisser CONTEXT / csproj / iss / manifest désalignés
+- Faux numéro « temporaire »

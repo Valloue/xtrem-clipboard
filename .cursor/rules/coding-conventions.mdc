@@ -1,0 +1,39 @@
+---
+description: Conventions C# WinUI 3 MVVM pour Xtrem Copy
+alwaysApply: true
+---
+
+# Conventions de code Xtrem Copy
+
+## Stack (cible) — **D-APP-COPY**, **D-PLAT**
+
+- **C#** · **WinUI 3** · **.NET 8** · Windows App SDK
+- Unpackaged, self-contained, publish **x64**, **`PublishTrimmed=false`** (**D-UNPACK**, **D-PUB-NOTRIM**)
+- OS min : **Windows 10 version 1809** (build 17763) — Fluent via WinUI, pas WPF
+- **MVVM** + CommunityToolkit.Mvvm : `[ObservableProperty]`, `[RelayCommand]`
+- DI : Microsoft.Extensions.DependencyInjection
+
+## Langue
+
+- **Code en anglais** (types, membres, fichiers)
+- **Commentaires en français**
+- **UI et réponses assistant en français** (**D-FR**, **D-CODE**)
+
+## Qualité
+
+- try/catch + `ILogger<T>` (Serilog → LocalAppData logs — **D-LOG-LOCAL**)
+- Build x64 Debug pour vérifier
+- Process verrouillé : fermer l’exe avant publish
+
+## Produit Copy (cible)
+
+- Remplacer l’historique presse-papiers Windows (Win+V) — **D-CLIP-HISTORY**
+- Raccourci global dédié (configurable) — **D-CLIP-HOTKEY**
+- Types V1 : **texte** + **images** ; épingler ; recherche — **D-CLIP-V1**
+- Persistance locale (LocalAppData), pas de cloud — **D-CLIP-LOCAL**
+- Vie privée : exclusions apps / contenu sensible — **D-CLIP-PRIVACY**
+- UI Fluent : historique + Réglages ; accent suite Pale Red — **D-UI-SHELL**, **D-UI-ACCENT**
+- settings.json persisté en temps réel — **D-SETTINGS**
+- Versionnement SemVer — **D-VERSION** / `versioning.mdc`
+- Isolation : ne pas modifier ToolBox ni **Xtrem Rec** sans demande explicite — **D-ISO-SUITE**
+- Open source GitHub, licence **MIT** — **D-OPENSOURCE**, **D-LICENSE-MIT**

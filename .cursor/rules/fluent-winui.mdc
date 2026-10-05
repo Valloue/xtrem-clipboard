@@ -1,0 +1,21 @@
+---
+description: Fluent / WinUI — shell historique presse-papiers Xtrem Copy
+alwaysApply: true
+---
+
+# Fluent / WinUI — Xtrem Copy
+
+Peau Fluent WinUI 3 (**D-UI-SHELL**) : historique compact + Réglages. Pas de layout « dashboard ».
+
+- Fond pages : `ApplicationPageBackgroundThemeBrush`
+- Contrôles WinUI standards (Button Accent, ListView, ComboBox, InfoBar, ProgressRing, TeachingTip)
+- Accent app = **Pale Red Windows 11** (`#D13438`, sombre `#E74856` / clair `#C42B1C`) — **D-UI-ACCENT**, pas l’accent OS
+- CheckBox : style app **sans AnimatedIcon** (sinon cocher une case anime toutes les autres)
+- Thème système / clair / sombre si `IThemeService` présent
+- Dialogs : ancrer sur le `XamlRoot` de **la page** concernée
+- Fenêtre popup historique : topmost, compacte, fermeture Esc / clic extérieur ; **ne pas** voler le focus des apps de façon agressive
+- Overlay / popup : exclure de la capture si pertinent (`WDA_EXCLUDEFROMCAPTURE`)
+- Navigation : **Historique** (principal) + **Réglages** (raccourci, rétention, exclusions, démarrage auto)
+- Liste d’entrées : aperçu texte tronqué / miniature image ; actions Coller / Copier / Épingler / Supprimer
+- Fond listes opaque (éviter alpha qui composite mal sous WinUI)
+- Mise à jour (si branchée) : InfoBar **MainWindow**, pas dans Réglages (**D-UPDATE**)

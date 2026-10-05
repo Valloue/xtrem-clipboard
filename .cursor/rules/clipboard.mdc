@@ -1,0 +1,37 @@
+---
+description: Invariants presse-papiers Xtrem Copy (écoute, stockage, hotkey, vie privée)
+alwaysApply: true
+---
+
+# Presse-papiers — Xtrem Copy (**D-CLIP-HISTORY**)
+
+Remplace l’historique Windows (Win+V) : écoute, historique local, popup Fluent, coller.
+
+## Invariants V1 (**D-CLIP-V1**)
+
+- Types : **texte Unicode** + **images bitmap** (PNG/BMP côté stockage)
+- Épingler / désépingler ; recherche texte ; limite de rétention configurable
+- Une entrée = un snapshot au moment du changement (pas de lien live vers le clipboard système)
+- Coller = remettre le contenu dans le clipboard puis simuler collage (Ctrl+V) vers la fenêtre précédente
+
+## Hotkey (**D-CLIP-HOTKEY**)
+
+- Raccourci global configurable (défaut proposé : proche de Win+V, sans casser le shell si non autorisé)
+- Documenter le conflit éventuel avec l’historique Windows natif
+
+## Stockage (**D-CLIP-LOCAL**)
+
+- Données sous LocalAppData (`…\XtremCopy\`) — textes + blobs images
+- Pas de sync cloud V1 ; pas d’envoi réseau du contenu clipboard
+
+## Vie privée (**D-CLIP-PRIVACY**)
+
+- Exclusions par process / titre (ex. gestionnaires de mots de passe)
+- Option « ne pas historiser » temporaire
+- Ne **jamais** logger le contenu clipboard en clair dans les logs app
+
+## Interdit sans demande explicite
+
+- Cloud / compte / upload d’historique
+- Injecter un hook clavier global hors hotkey déclaré
+- Contenu PDF / fichiers / HTML-RTF comme type V1 (hors scope jusqu’à décision)
