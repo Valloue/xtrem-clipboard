@@ -1,5 +1,10 @@
 # HANDOFF — Xtrem Copy
 
+## Remote Git
+
+- GitHub : **https://github.com/Valloue/xtrem-copy** (`origin` / `main`, public, MIT)
+- Compte CLI : `Valloue` (`gh auth`)
+
 ## Pièges connus
 
 - Ce dépôt a démarré avec des **rules clonées de Xtrem Rec** : elles ont été recentrées le 05/10/2026. Ne pas réintroduire FFmpeg / Discord / capture.

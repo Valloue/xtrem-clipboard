@@ -1,16 +1,13 @@
 # TODO — Xtrem Copy
 
-**Version :** 0.1.1  
+**Version :** 0.1.2  
 **Date :** 05/10/2026  
-**Focus :** Auth GitHub → repo public + push initial  
-**Bloqueur :** connexion `gh auth login` (code device)  
-**Dernière action :** Git + gh installés ; LICENSE MIT / README / .gitignore ; auth device en attente
+**Focus :** Scaffold WinUI 3  
+**Bloqueur :** aucun  
+**Dernière action :** Repo GitHub public `Valloue/xtrem-copy` créé + push `main`
 
 ## P0
 
-- [ ] `T-GH-REMOTE` — Créer le dépôt GitHub public `xtrem-copy` et pousser `main`
-  - **Questions**
-    - Confirmer le nom exact du repo (`xtrem-copy`) et le compte GitHub cible ?
 - [ ] `T-CLIP-SCAFFOLD` — Créer solution WinUI 3 unpackaged `XtremCopy` (.NET 8, x64)
   - **Questions**
     - Confirmer le nom d’assembly / exe `XtremCopy` ?
@@ -41,6 +38,7 @@
 
 - [x] `T-RULES-COPY` — Rules / skills / docs skeleton recentrés sur Xtrem Copy (05/10/2026)
 - [x] `T-OSS-PREP` — LICENSE MIT + README + .gitignore + **D-OPENSOURCE** (05/10/2026)
+- [x] `T-GH-REMOTE` — Dépôt public https://github.com/Valloue/xtrem-copy + push `main` (05/10/2026)
 
 ## Hors
 

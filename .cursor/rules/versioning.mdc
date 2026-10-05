@@ -9,7 +9,7 @@ alwaysApply: true
 
 Source de vérité affichée : ligne **Version** de `PROJECT_CONTEXT.md` (alignée avec `XtremCopy.csproj` `<Version>`, `Package.appxmanifest`, `Installer/XtremCopy.iss` **quand ils existent**).
 
-**Courant : 0.1.1**
+**Courant : 0.1.2**
 
 ## Schéma (on ne change que le « x »)
 

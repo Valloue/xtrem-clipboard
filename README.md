@@ -2,6 +2,8 @@
 
 Historique de presse-papiers pour Windows — alternative Fluent à Win+V.
 
+**Dépôt :** https://github.com/Valloue/xtrem-copy (public, MIT)
+
 **Statut :** cadrage / démarrage (pas encore d’application compilable).
 
 ## Stack

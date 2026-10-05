@@ -1,14 +1,14 @@
 ﻿# PROJECT_CONTEXT — Xtrem Copy
 
-**Version :** 0.1.1  
+**Version :** 0.1.2  
 **Date :** 05/10/2026  
-**État :** OK — open source GitHub en cours de branchement ; pas encore de code app
+**État :** OK — GitHub public branché ; pas encore de code app
 
 ## Où on en est
 
 Nouveau produit **Xtrem Copy** : remplacement de l’historique presse-papiers Windows (Win+V), Fluent Design, C# WinUI 3 / .NET 8.
 
-Rules / docs recentrés Copy. Ajouts open source : `LICENSE` (MIT), `README.md`, `.gitignore`. Branchement GitHub public (**D-OPENSOURCE**).
+Rules / docs Copy. Open source : **https://github.com/Valloue/xtrem-copy** (public, MIT — **D-OPENSOURCE**, **D-LICENSE-MIT**). Remote `origin` = `main`.
 
 ## Décisions clés
 
@@ -20,7 +20,7 @@ Rules / docs recentrés Copy. Ajouts open source : `LICENSE` (MIT), `README.md`,
 
 ## Prochaine étape
 
-Finaliser remote GitHub + push initial, puis scaffold WinUI 3 (`XtremCopy`).
+Scaffold WinUI 3 (`XtremCopy`) + écoute clipboard + UI historique.
 
 ## Hors périmètre (pour l’instant)
 

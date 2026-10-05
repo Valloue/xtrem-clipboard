@@ -27,6 +27,7 @@ Sources de vérité :
 - **Interdit** de modifier ToolBox / `Xtrem agent` sans autorisation **explicite**.
 - **Interdit** de modifier le dépôt **Xtrem Rec** depuis ce workspace sans demande **explicite**.
 - Ce dépôt = app **Xtrem Copy** autonome (**D-APP-COPY**).
+- Open source : remote GitHub public **https://github.com/Valloue/xtrem-copy** (**D-OPENSOURCE**, **D-LICENSE-MIT**).
 
 ## APRÈS CHAQUE modification (même tour)
 

@@ -2,6 +2,7 @@
 
 | Doc | Rôle |
 |-----|------|
+| GitHub | https://github.com/Valloue/xtrem-copy (public) |
 | `../PROJECT_CONTEXT.md` | Où on en est, version, prochaine étape |
 | `TODO.md` | Checklist live + Questions |
 | `DECISIONS.md` | Décisions figées `D-*` |
