@@ -56,3 +56,8 @@ desktop.ini
 # Nextcloud / sync noise
 .~lock.*
 *.tmp
+# Pipeline de publication + regles IA : infra privee (IP serveur, hostkey SSH) - non publie sur GitHub
+.opencode/
+AGENTS.md
+opencode.json
+tools/web/

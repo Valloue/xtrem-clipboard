@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="XtremClipboard.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:XtremClipboard.ViewModels"
+    Title="Xtrem Clipboard — Réglages">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <ScrollViewer Padding="24,16,24,24">
+            <StackPanel Spacing="16" MaxWidth="520">
+                <TextBlock Text="Réglages" Style="{StaticResource TitleTextBlockStyle}" />
+                <TextBlock
+                    Text="Fermer cette fenêtre laisse Xtrem Clipboard actif (icône près de l'horloge). Quitter se fait depuis le menu de l'icône."
+                    TextWrapping="Wrap"
+                    Opacity="0.8" />
+
+                <InfoBar
+                    IsOpen="{x:Bind Banner.IsBannerOpen, Mode=OneWay}"
+                    Severity="{x:Bind Banner.BannerSeverity, Mode=OneWay}"
+                    Title="{x:Bind Banner.BannerTitle, Mode=OneWay}"
+                    Message="{x:Bind Banner.BannerMessage, Mode=OneWay}"
+                    CloseButtonClick="UpdateBar_CloseClicked">
+                    <InfoBar.ActionButton>
+                        <Button
+                            Content="Mettre à jour"
+                            IsEnabled="{x:Bind Banner.IsInstallReady, Mode=OneWay}"
+                            Click="UpdateNow_Click"
+                            Style="{StaticResource AccentButtonStyle}" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
+
+                <InfoBar
+                    IsOpen="True"
+                    IsClosable="False"
+                    Severity="Informational"
+                    Message="{x:Bind ViewModel.StatusText, Mode=OneWay}" />
+
+                <TextBlock Text="Raccourci" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <TextBlock Text="{x:Bind ViewModel.HotkeyDisplay, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Content="Modifier" Click="EditHotkey_Click" Style="{StaticResource AccentButtonStyle}" />
+                    <Button Content="Annuler" Click="CancelHotkey_Click" IsEnabled="{x:Bind ViewModel.IsCapturingHotkey, Mode=OneWay}" />
+                </StackPanel>
+
+                <TextBlock Text="Limite de l'historique" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <RadioButtons Header="Mode" SelectedIndex="{x:Bind ViewModel.RetentionModeIndex, Mode=TwoWay}">
+                    <x:String>Par durée (jours)</x:String>
+                    <x:String>Par taille disque (Mo)</x:String>
+                    <x:String>Par nombre d'entrées</x:String>
+                </RadioButtons>
+                <NumberBox
+                    Header="Jours"
+                    Visibility="{x:Bind ViewModel.DaysVisibility, Mode=OneWay}"
+                    Value="{x:Bind ViewModel.RetentionDays, Mode=TwoWay}"
+                    Minimum="1" Maximum="3650" SpinButtonPlacementMode="Compact" />
+                <NumberBox
+                    Header="Taille max (Mo)"
+                    Visibility="{x:Bind ViewModel.MegabytesVisibility, Mode=OneWay}"
+                    Value="{x:Bind ViewModel.RetentionMaxMegabytes, Mode=TwoWay}"
+                    Minimum="1" Maximum="102400" SpinButtonPlacementMode="Compact" />
+                <NumberBox
+                    Header="Nombre d'entrées"
+                    Visibility="{x:Bind ViewModel.EntriesVisibility, Mode=OneWay}"
+                    Value="{x:Bind ViewModel.RetentionMaxEntries, Mode=TwoWay}"
+                    Minimum="1" Maximum="100000" SpinButtonPlacementMode="Compact" />
+
+                <TextBlock Text="Général" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <ToggleSwitch
+                    Header="Démarrer avec Windows"
+                    IsOn="{x:Bind ViewModel.StartWithWindows, Mode=TwoWay}" />
+                <ToggleSwitch
+                    Header="Pause de la capture"
+                    OffContent="Les copies sont enregistrées"
+                    OnContent="Les nouvelles copies sont ignorées"
+                    IsOn="{x:Bind ViewModel.CapturePaused, Mode=TwoWay}" />
+
+                <TextBlock Text="Applications exclues" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <TextBlock
+                    Text="Les gestionnaires de mots de passe sont toujours exclus, sans choix : 1Password, Authy, Bitwarden, Buttercup, Dashlane, Enpass, KeePass, Keeper, LastPass, NordPass, Proton Pass, RoboForm, et les autres coffres du même type."
+                    TextWrapping="Wrap"
+                    Opacity="0.8" />
+                <TextBlock
+                    Text="Pour une autre application, indique son processus ou choisis une fenêtre. Le titre est optionnel : vide, toute l'application est exclue."
+                    TextWrapping="Wrap"
+                    Opacity="0.8" />
+                <TextBlock
+                    Text="Aucune application exclue."
+                    Visibility="{x:Bind ViewModel.NoExclusionsVisibility, Mode=OneWay}"
+                    Opacity="0.8" />
+                <ListView
+                    ItemsSource="{x:Bind ViewModel.Exclusions}"
+                    SelectionMode="None"
+                    MaxHeight="180"
+                    Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ExclusionEntry">
+                            <Grid ColumnSpacing="8" Padding="0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{x:Bind Display}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                                <Button Grid.Column="1" Content="Retirer" Click="RemoveExclusion_Click" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <TextBox
+                    Header="Processus"
+                    PlaceholderText="Code.exe"
+                    Text="{x:Bind ViewModel.NewProcessName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox
+                    Header="Titre contient (optionnel)"
+                    PlaceholderText="Laisser vide pour toute l'application"
+                    Text="{x:Bind ViewModel.NewTitleContains, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Content="Ajouter" Command="{x:Bind ViewModel.AddExclusionCommand}" Style="{StaticResource AccentButtonStyle}" />
+                    <Button Content="Choisir une fenêtre…" Click="PickExclusion_Click" />
+                </StackPanel>
+
+                <TextBlock Text="Historique" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <TextBlock Text="{x:Bind ViewModel.HistoryStatusText, Mode=OneWay}" TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Content="Vider (garder les épinglés)" Command="{x:Bind ViewModel.ClearUnpinnedCommand}" />
+                    <Button Content="Ouvrir le dossier" Command="{x:Bind ViewModel.OpenDataFolderCommand}" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

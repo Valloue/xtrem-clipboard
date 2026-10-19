@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="XtremClipboard.Views.FirstConfigWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Xtrem Clipboard — Configuration">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,16">
+            <TextBlock Text="Xtrem Clipboard" Style="{StaticResource TitleTextBlockStyle}" />
+            <TextBlock
+                Text="Bienvenue — configurez l'application avant la première utilisation"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Opacity="0.8"
+                TextWrapping="Wrap" />
+        </StackPanel>
+
+        <ScrollViewer x:Name="StepScroller"
+                      Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      IsTabStop="False">
+            <Grid>
+            <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.Step1Visibility, Mode=OneWay}">
+                <TextBlock Text="Étape 1 / 2 — Raccourci" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <TextBlock TextWrapping="Wrap"
+                           Text="Cliquez la zone, puis la combinaison (Ctrl, Alt, Shift ou Win + une touche). Refaites ensuite ce raccourci pour le tester. Continuer s'active seulement après un test réussi." />
+
+                <Border
+                    x:Name="CaptureBorder"
+                    Padding="16"
+                    BorderBrush="{StaticResource AccentAppBrush}"
+                    BorderThickness="2"
+                    CornerRadius="8"
+                    Background="{ThemeResource LayerFillColorDefaultBrush}"
+                    IsTabStop="True"
+                    KeyDown="CaptureBorder_KeyDown"
+                    PointerPressed="CaptureBorder_PointerPressed">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Zone de capture (cliquer puis taper)" Opacity="0.7" />
+                        <TextBlock Text="{x:Bind ViewModel.HotkeyDisplay, Mode=OneWay}"
+                                   Style="{StaticResource SubtitleTextBlockStyle}" />
+                    </StackPanel>
+                </Border>
+
+                <Button Content="Annuler le test"
+                        Command="{x:Bind ViewModel.CancelHotkeyTestCommand}"
+                        Visibility="{x:Bind ViewModel.TestingVisibility, Mode=OneWay}"
+                        HorizontalAlignment="Left" />
+
+                <InfoBar IsOpen="True"
+                         IsClosable="False"
+                         Severity="{x:Bind ViewModel.StatusSeverity, Mode=OneWay}"
+                         Message="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" />
+            </StackPanel>
+
+            <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.Step2Visibility, Mode=OneWay}">
+                <TextBlock Text="Étape 2 / 2 — Limite de l'historique" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <TextBlock TextWrapping="Wrap"
+                           Text="Choisissez comment limiter le stockage local. Valeurs proposées : 30 jours, 500 Mo ou 500 entrées." />
+
+                <RadioButtons SelectedIndex="{x:Bind ViewModel.RetentionModeIndex, Mode=TwoWay}" Header="Mode de limite">
+                    <x:String>Par durée (jours)</x:String>
+                    <x:String>Par taille disque (Mo)</x:String>
+                    <x:String>Par nombre d'entrées</x:String>
+                </RadioButtons>
+
+                <NumberBox Header="Jours"
+                           Visibility="{x:Bind ViewModel.DaysVisibility, Mode=OneWay}"
+                           Value="{x:Bind ViewModel.RetentionDays, Mode=TwoWay}"
+                           Minimum="1"
+                           Maximum="3650"
+                           SpinButtonPlacementMode="Compact" />
+                <NumberBox Header="Taille max (Mo)"
+                           Visibility="{x:Bind ViewModel.MegabytesVisibility, Mode=OneWay}"
+                           Value="{x:Bind ViewModel.RetentionMaxMegabytes, Mode=TwoWay}"
+                           Minimum="1"
+                           Maximum="102400"
+                           SpinButtonPlacementMode="Compact" />
+                <NumberBox Header="Nombre d'entrées"
+                           Visibility="{x:Bind ViewModel.EntriesVisibility, Mode=OneWay}"
+                           Value="{x:Bind ViewModel.RetentionMaxEntries, Mode=TwoWay}"
+                           Minimum="1"
+                           Maximum="100000"
+                           SpinButtonPlacementMode="Compact" />
+
+                <InfoBar IsOpen="True"
+                         IsClosable="False"
+                         Severity="Informational"
+                         Message="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" />
+            </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
+        <Grid Grid.Row="2" Margin="0,16,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Content="Retour"
+                    Command="{x:Bind ViewModel.BackToStep1Command}"
+                    Visibility="{x:Bind ViewModel.Step2Visibility, Mode=OneWay}"
+                    HorizontalAlignment="Left" />
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                <Button Content="Continuer"
+                        Command="{x:Bind ViewModel.GoToStep2Command}"
+                        Style="{StaticResource AccentButtonStyle}"
+                        IsEnabled="{x:Bind ViewModel.IsHotkeyTested, Mode=OneWay}"
+                        Visibility="{x:Bind ViewModel.Step1Visibility, Mode=OneWay}" />
+                <Button Content="Activer Xtrem Clipboard"
+                        Command="{x:Bind ViewModel.ActivateCommand}"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Visibility="{x:Bind ViewModel.Step2Visibility, Mode=OneWay}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

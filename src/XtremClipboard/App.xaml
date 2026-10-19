@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Application
+    x:Class="XtremClipboard.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Accent vert de l'icône Xtrem CP #008A3F (D-UI-ACCENT), pas l'accent OS -->
+            <Color x:Key="SystemAccentColor">#008A3F</Color>
+            <Color x:Key="SystemAccentColorLight1">#1A9A52</Color>
+            <Color x:Key="SystemAccentColorLight2">#3AAD6C</Color>
+            <Color x:Key="SystemAccentColorLight3">#6CC492</Color>
+            <Color x:Key="SystemAccentColorDark1">#006B31</Color>
+            <Color x:Key="SystemAccentColorDark2">#004F24</Color>
+            <Color x:Key="SystemAccentColorDark3">#003618</Color>
+
+            <SolidColorBrush x:Key="AccentAppBrush" Color="#008A3F" />
+            <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#008A3F" />
+            <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#1A9A52" />
+            <SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="#006B31" />
+            <SolidColorBrush x:Key="AccentFillColorDisabledBrush" Color="#66008A3F" />
+            <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TextOnAccentFillColorSecondaryBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="TextOnAccentFillColorDisabledBrush" Color="#99FFFFFF" />
+
+            <SolidColorBrush x:Key="AccentButtonBackground" Color="#008A3F" />
+            <SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#1A9A52" />
+            <SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="#006B31" />
+            <SolidColorBrush x:Key="AccentButtonBackgroundDisabled" Color="#66008A3F" />
+            <SolidColorBrush x:Key="AccentButtonForeground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AccentButtonForegroundDisabled" Color="#99FFFFFF" />
+            <SolidColorBrush x:Key="AccentButtonBorderBrush" Color="#008A3F" />
+            <SolidColorBrush x:Key="AccentButtonBorderBrushPointerOver" Color="#1A9A52" />
+            <SolidColorBrush x:Key="AccentButtonBorderBrushPressed" Color="#006B31" />
+            <SolidColorBrush x:Key="AccentButtonBorderBrushDisabled" Color="#66008A3F" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
