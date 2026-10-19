@@ -57,8 +57,15 @@ desktop.ini
 .~lock.*
 *.tmp
 
-# Pipeline de publication + regles IA : infra privee (IP serveur, hostkey SSH) - non publie sur GitHub
+# Prive - non publie
 .opencode/
 AGENTS.md
 opencode.json
 tools/web/
+# Depot public = source minimale pour contribuer (decision Valentin 19/10/2026)
+# Pas de .md, pas de .bat, pas d'artefacts de publication
+*.md
+*.bat
+web/
+tests/
+Xtrem_CP_icon.png
