@@ -69,3 +69,5 @@ tools/web/
 web/
 tests/
 Xtrem_CP_icon.png
+!README.md
+Installer/
