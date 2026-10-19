@@ -3,7 +3,7 @@
 ; App autonome de la suite Xtrem : AppId propre, aucun fichier partage.
 
 #ifndef MyAppVersion
-#define MyAppVersion "0.11.0"
+#define MyAppVersion "0.11.2"
 #endif
 
 #define MyAppName "Xtrem Clipboard"
@@ -55,6 +55,8 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilen
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 ; Auto-update silencieux : relance l'app apres /VERYSILENT (regle auto-update.md, D-UPDATE).
 Filename: "{app}\{#MyAppExeName}"; Flags: nowait postinstall skipifnotsilent
+
+
 
 
 
