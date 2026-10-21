@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using XtremClipboard.Services;
+using XtremClipboard.Services.Logging;
 
 namespace XtremClipboard.ViewModels;
 
@@ -34,6 +35,9 @@ public partial class HistoryViewModel : ObservableObject
     [ObservableProperty]
     private HistoryItemViewModel? _selectedItem;
 
+    /// <summary>Génération de filtrage : seule la dernière frappe met à jour la liste.</summary>
+    private int _filterGeneration;
+
     public HistoryViewModel(
         IClipboardHistoryStore store,
         IPasteService paste,
@@ -50,23 +54,44 @@ public partial class HistoryViewModel : ObservableObject
 
     partial void OnSearchTextChanged(string value) => Refresh();
 
+    /// <summary>
+    /// Rafraîchit la liste. Le filtrage (donc la recherche, et le repli ciblé tant que le
+    /// cache RAM n'est pas prêt — BUG-4 testeur) tourne HORS du thread UI : l'overlay ne
+    /// se fige jamais, même sur un historique volumineux au premier caractère tapé.
+    /// </summary>
     public void Refresh()
     {
-        var q = SearchText?.Trim() ?? string.Empty;
-        var list = _store.Entries
-            .Where(e => _store.MatchesSearch(e, q))
-            .OrderByDescending(e => e.IsPinned)
-            .ThenByDescending(e => e.CreatedAt)
-            .Select(e => new HistoryItemViewModel(e, _store))
-            .ToList();
+        var generation = Interlocked.Increment(ref _filterGeneration);
+        var query = SearchText?.Trim() ?? string.Empty;
+        var entries = _store.Entries;
 
-        Items.Clear();
-        foreach (var item in list)
-            Items.Add(item);
+        _ = Task.Run(() =>
+        {
+            var list = entries
+                .Where(e => _store.MatchesSearch(e, query))
+                .OrderByDescending(e => e.IsPinned)
+                .ThenByDescending(e => e.CreatedAt)
+                .Select(e => new HistoryItemViewModel(e, _store))
+                .ToList();
 
-        StatusText = Items.Count == 0
-            ? "Aucune entrée — copiez du texte ou une image."
-            : $"{Items.Count} entrée(s) · ↑↓ Entrée pour coller";
+            // Une frappe ou un événement plus récent a pris le relais → résultat obsolète
+            if (Volatile.Read(ref _filterGeneration) != generation)
+                return;
+
+            _dispatcher.TryEnqueue(() =>
+            {
+                if (Volatile.Read(ref _filterGeneration) != generation)
+                    return;
+
+                Items.Clear();
+                foreach (var item in list)
+                    Items.Add(item);
+
+                StatusText = Items.Count == 0
+                    ? "Aucune entrée — copiez du texte ou une image."
+                    : $"{Items.Count} entrée(s) · ↑↓ Entrée pour coller";
+            });
+        });
     }
 
     public void MoveSelection(int delta)
@@ -136,8 +161,26 @@ public partial class HistoryViewModel : ObservableObject
         if (item is null) return;
 
         var next = !item.IsPinned;
-        if (_store.SetPinned(item.Id, next))
-            item.IsPinned = next;
+        _logger.LogInformation(
+            "Épinglage demandé {EventCode} {Category} {Result}",
+            "CLIP-HIST-PIN",
+            "usage",
+            "demande");
+        Breadcrumbs.Add("épinglage");
+        try
+        {
+            if (_store.SetPinned(item.Id, next))
+                item.IsPinned = next;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Épinglage impossible {EventCode} {Category} {Result}",
+                "CLIP-HIST-PIN",
+                "usage",
+                "echec");
+        }
     }
 
     [RelayCommand]
@@ -151,5 +194,14 @@ public partial class HistoryViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Close() => RequestClose?.Invoke();
+    private void Close()
+    {
+        _logger.LogInformation(
+            "Fermeture de l'overlay demandée {EventCode} {Category} {Result}",
+            "CLIP-UI-CLOSE",
+            "usage",
+            "demande");
+        Breadcrumbs.Add("overlay fermé");
+        RequestClose?.Invoke();
+    }
 }

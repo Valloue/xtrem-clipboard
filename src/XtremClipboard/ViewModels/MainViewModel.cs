@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Windows.System;
 using XtremClipboard.Models;
 using XtremClipboard.Services;
+using XtremClipboard.Services.Logging;
 
 namespace XtremClipboard.ViewModels;
 
@@ -217,6 +218,12 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void AddExclusion()
     {
+        _logger.LogInformation(
+            "Ajout d'exclusion demandé {EventCode} {Category} {Result}",
+            "CLIP-EXCL-ADD",
+            "usage",
+            "demande");
+
         var name = _exclusions.NormalizeProcessName(NewProcessName);
         if (name is null)
         {
@@ -233,6 +240,7 @@ public partial class MainViewModel : ObservableObject
 
         // Titre jamais journalisé (D-CLIP-PRIVACY) — présence seule
         _logger.LogInformation("Exclusion ajoutée : {Process} (filtre titre : {HasTitle})", name, title.Length > 0);
+        Breadcrumbs.Add("exclusion ajoutée");
         NewProcessName = string.Empty;
         NewTitleContains = string.Empty;
     }
@@ -260,6 +268,12 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void ClearUnpinned()
     {
+        _logger.LogInformation(
+            "Vidage de l'historique demandé {EventCode} {Category} {Result}",
+            "CLIP-HIST-CLEAR",
+            "usage",
+            "demande");
+        Breadcrumbs.Add("historique vidé");
         var removed = _history.ClearUnpinned();
         _logger.LogInformation("Vider l'historique demandé ({Removed} supprimée(s))", removed);
         StatusText = removed == 0
@@ -270,6 +284,12 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void OpenDataFolder()
     {
+        _logger.LogInformation(
+            "Ouverture du dossier données demandée {EventCode} {Category} {Result}",
+            "CLIP-SET-FOLDER",
+            "usage",
+            "demande");
+        Breadcrumbs.Add("dossier données");
         try
         {
             Directory.CreateDirectory(_settings.DataDirectory);

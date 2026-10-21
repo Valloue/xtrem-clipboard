@@ -18,12 +18,15 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <Version>0.11.7</Version>
+    <Version>0.12.11</Version>
     <ApplicationIcon>Assets\App.ico</ApplicationIcon>
     <Authors>Valloue</Authors>
     <Product>Xtrem Clipboard</Product>
     <Description>Historique presse-papiers Fluent pour Windows</Description>
     <PublishTrimmed>false</PublishTrimmed>
+    <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(Configuration)' == 'Release'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,13 +35,20 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250108002" />
+    <!-- Moteur OCR = ONNX Runtime CPU (PP-OCRv6 Medium ONNX officiel — D-OCR-ENGINE) -->
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.31.0" />
     <PackageReference Include="Serilog" Version="4.2.0" />
+    <PackageReference Include="Serilog.Expressions" Version="5.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
     <None Update="Assets\App.ico" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Modèles OCR PP-OCRv6 Medium (ONNX officiels PaddlePaddle, Apache-2.0 — D-OCR-LOCAL) :
+         copiés à côté de l'exe (mécanisme unique de déploiement), donc embarqués dans le Setup. -->
+    <Content Include="Models\OCR\**\*.*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

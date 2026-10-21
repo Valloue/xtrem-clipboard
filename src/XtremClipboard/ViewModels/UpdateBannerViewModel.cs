@@ -5,6 +5,7 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
 using XtremClipboard.Models;
 using XtremClipboard.Services;
+using XtremClipboard.Services.Logging;
 
 namespace XtremClipboard.ViewModels;
 
@@ -122,8 +123,13 @@ public partial class UpdateBannerViewModel : ObservableObject
     [RelayCommand]
     private void Postpone()
     {
+        _logger.LogInformation(
+            "Mise à jour reportée {EventCode} {Category} {Result}",
+            "CLIP-UPD-POSTPONE",
+            "update",
+            "reporte");
+        Breadcrumbs.Add("mise à jour reportée");
         IsBannerOpen = false;
-        _logger.LogInformation("Mise à jour : repoussée jusqu'au prochain démarrage (fichier en cache)");
     }
 
     private bool CanApply() => IsInstallReady && _pending is not null;
@@ -131,6 +137,13 @@ public partial class UpdateBannerViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanApply))]
     private async Task ApplyAsync()
     {
+        _logger.LogInformation(
+            "Installation de mise à jour demandée {EventCode} {Category} {Result}",
+            "CLIP-UPD-APPLY",
+            "update",
+            "demande");
+        Breadcrumbs.Add("mise à jour lancée");
+
         var pending = _pending;
         if (pending is null)
         {
@@ -155,7 +168,12 @@ public partial class UpdateBannerViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Mise à jour : attente download avant install");
+                _logger.LogError(
+                    ex,
+                    "Mise à jour : attente du téléchargement impossible {EventCode} {Category} {Result}",
+                    "CLIP-UPD-APPLY",
+                    "update",
+                    "echec");
                 ShowError("Téléchargement interrompu. Réessayez au prochain lancement.");
                 return;
             }

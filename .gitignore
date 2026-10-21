@@ -56,7 +56,7 @@ desktop.ini
 .~lock.*
 *.tmp
 
-# Prive - non publie
+# OpenCode retire le 20/10/2026 — ne pas reintroduire
 .opencode/
 AGENTS.md
 opencode.json

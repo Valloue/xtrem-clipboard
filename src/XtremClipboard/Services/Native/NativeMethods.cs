@@ -70,6 +70,7 @@ internal static class NativeMethods
     public const uint WmAppInvoke = 0x8001;
 
     public const int WhKeyboardLl = 13;
+    public const int WhMouseLl = 14;
     public const int WmClipboardUpdate = 0x031D;
 
     [DllImport("user32.dll", SetLastError = true)]
@@ -77,6 +78,10 @@ internal static class NativeMethods
 
     [DllImport("user32.dll", SetLastError = true)]
     public static extern bool RemoveClipboardFormatListener(IntPtr hwnd);
+
+    /// <summary>Numéro de séquence du presse-papiers (change à chaque écriture réelle).</summary>
+    [DllImport("user32.dll")]
+    public static extern uint GetClipboardSequenceNumber();
 
     public const int WmKeyDown = 0x0100;
     public const int WmKeyUp = 0x0101;
@@ -88,6 +93,9 @@ internal static class NativeMethods
 
     [DllImport("user32.dll", SetLastError = true)]
     public static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
 
     [DllImport("user32.dll", SetLastError = true)]
     public static extern bool UnhookWindowsHookEx(IntPtr hhk);
@@ -109,6 +117,19 @@ internal static class NativeMethods
     }
 
     public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+    public delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+    /// <summary>MSLLHOOKSTRUCT — point en pixels écran, même espace que GetWindowRect.</summary>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MsLlHookStruct
+    {
+        public Point pt;
+        public uint mouseData;
+        public uint flags;
+        public uint time;
+        public IntPtr dwExtraInfo;
+    }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct WndClass
@@ -149,7 +170,9 @@ internal static class NativeMethods
 
     public const uint WdaExcludeFromCapture = 0x00000011;
 
+    public const int VkShift = 0x10;
     public const int VkControl = 0x11;
+    public const int VkMenu = 0x12;
     public const int VkC = 0x43;
     public const int KeyeventfKeyup = 0x0002;
     public const int InputKeyboard = 1;
@@ -161,9 +184,15 @@ internal static class NativeMethods
     public const uint NifIcon = 0x00000002;
     public const uint NifTip = 0x00000004;
     public const uint WmAppTray = 0x8002;
+    public const uint WmLbuttonDown = 0x0201;
     public const uint WmLbuttonup = 0x0202;
+    public const uint WmRbuttonDown = 0x0204;
     public const uint WmRbuttonup = 0x0205;
+    public const uint WmMbuttonDown = 0x0207;
+    public const uint WmXbuttonDown = 0x020B;
     public const uint WmLbuthordblclk = 0x0203;
+    public const uint GaRoot = 2;
+    public const uint GaRootOwner = 3;
 
     public const int IdiApplication = 32512;
     public const uint ImageIcon = 1;
@@ -178,7 +207,7 @@ internal static class NativeMethods
     [DllImport("user32.dll")]
     public static extern IntPtr GetForegroundWindow();
 
-    [DllImport("user32.dll")]
+    [DllImport("user32.dll", SetLastError = true)]
     public static extern bool SetForegroundWindow(IntPtr hWnd);
 
     [DllImport("user32.dll")]
@@ -194,6 +223,15 @@ internal static class NativeMethods
     public static extern bool GetCursorPos(out Point pt);
 
     [DllImport("user32.dll")]
+    public static extern bool GetWindowRect(IntPtr hWnd, out Rect lpRect);
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr WindowFromPoint(Point point);
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
+
+    [DllImport("user32.dll")]
     public static extern IntPtr MonitorFromPoint(Point pt, uint dwFlags);
 
     [DllImport("user32.dll")]
@@ -201,6 +239,9 @@ internal static class NativeMethods
 
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MonitorInfo lpmi);
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    public static extern bool UnregisterClass(string lpClassName, IntPtr hInstance);
 
     [DllImport("user32.dll", SetLastError = true)]
     public static extern uint SendInput(uint nInputs, Input[] pInputs, int cbSize);

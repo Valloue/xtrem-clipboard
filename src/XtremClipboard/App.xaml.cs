@@ -6,6 +6,7 @@ using Serilog;
 using WinRT.Interop;
 using XtremClipboard.Models;
 using XtremClipboard.Services;
+using XtremClipboard.Services.Logging;
 using XtremClipboard.Services.Native;
 using XtremClipboard.ViewModels;
 using XtremClipboard.Views;
@@ -22,9 +23,8 @@ public partial class App : Application
     private SingleInstanceGuard? _instance;
     private bool _hotkeyRouted;
     private ILogger<App> _log = null!;
-    private DateTimeOffset _sessionStarted;
-    private string? _sessionMarkerPath;
-    private bool _sessionEnded;
+    private SessionTracker? _session;
+    private HostShutdownHook? _shutdownHook;
     private IUpdateService? _updates;
     private UpdateBannerViewModel? _updateBanner;
 
@@ -43,17 +43,14 @@ public partial class App : Application
             Services = ConfigureServices();
             _log = Services.GetRequiredService<ILogger<App>>();
 
-            // Intercepteurs de crash listelog §2.1 (hors Application.UnhandledException déjà branché)
-            AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
-            TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
-            AppDomain.CurrentDomain.ProcessExit += (_, _) => EndSession("ProcessExit");
-
             _instance = Services.GetRequiredService<SingleInstanceGuard>();
             if (!_instance.IsPrimary)
             {
-                _log.LogInformation("Seconde instance détectée — signal envoyé à la première, sortie");
+                // Pas d'Open : le marqueur et le drapeau restent ceux de la première.
+                // Close écrit la raison et le code, puis vide le journal de cette instance.
                 _instance.SignalPeer();
-                EndSession("Seconde instance");
+                var tracker = _session ?? throw new InvalidOperationException("Journal non initialisé.");
+                tracker.Close("Seconde instance", 0);
                 Environment.Exit(0);
                 return;
             }
@@ -62,9 +59,19 @@ public partial class App : Application
 
             _uiDispatcher = DispatcherQueue.GetForCurrentThread();
 
-            InitSessionMarker();
-            _log.LogInformation("Xtrem Clipboard démarré (v{Version})",
-                typeof(App).Assembly.GetName().Version?.ToString() ?? "?");
+            // Après le rejet de la seconde instance, pour ne pas poser son drapeau crash
+            // sur le marqueur de la première.
+            var session = _session ?? throw new InvalidOperationException("Journal non initialisé.");
+            CrashHandlers.Install(Log.Logger, session);
+            session.Open();
+            Breadcrumbs.Add("démarrage");
+            _log.LogInformation(
+                "Xtrem Clipboard démarré (v{Version}+{Commit}) {EventCode} {Category} {Result}",
+                session.Version,
+                session.Commit,
+                "CLIP-LIFE-START",
+                "cycle",
+                "ok");
             LogSystemContext();
 
             if (AppDataPaths.MigrationError is not null)
@@ -80,10 +87,18 @@ public partial class App : Application
             _log.LogInformation("Release Win+V: {Msg}", winVMsg);
 
             var settings = Services.GetRequiredService<ISettingsService>();
-            if (!settings.Current.IsSetupCompleted)
-                ShowFirstConfig();
-            else
+            if (settings.Current.IsSetupCompleted)
+            {
+                // BUG-5 testeur : armer store + écoute presse-papiers LE PLUS TÔT possible,
+                // avant les opérations lourdes (fenêtre, tray, hotkeys) — toute copie faite
+                // pendant l'init est alors capturée (ou rattrapée en fin d'init).
+                StartClipboardPipeline();
                 StartConfiguredApp(settings);
+            }
+            else
+            {
+                ShowFirstConfig();
+            }
 
             try
             {
@@ -96,119 +111,80 @@ public partial class App : Application
             {
                 _log.LogError(ex, "Impossible d'activer l'interception Win+V");
             }
+
+            // Rattrapage unique (BUG-5) : une copie faite pendant l'initialisation peut
+            // avoir échappé à la capture — relecture du presse-papiers courant, sans
+            // doublon (dédup par hash côté store).
+            CaptureStartupBacklog();
         }
         catch (Exception ex)
         {
             Log.Fatal(ex, "Échec fatal au lancement");
-            EndSession("Échec lancement");
+            if (_session is { IsOpen: true })
+                _session.Close("Échec lancement", 1);
+            else
+                CrashHandlers.OnProcessExit();
             throw;
         }
     }
 
-    /// <summary>Marqueur de session : détecte une fin anormale au lancement suivant (listelog §2.10).</summary>
-    private void InitSessionMarker()
-    {
-        try
-        {
-            _sessionMarkerPath = Path.Combine(AppDataPaths.Root, "logs", "session.marker");
-            if (File.Exists(_sessionMarkerPath))
-            {
-                var previous = File.ReadAllText(_sessionMarkerPath).Trim();
-                _log.LogWarning(
-                    "Arrêt anormal détecté : la session précédente (démarrée {PreviousStart}) n'a pas fini proprement",
-                    previous);
-                File.Delete(_sessionMarkerPath);
-            }
-
-            _sessionStarted = DateTimeOffset.Now;
-            File.WriteAllText(_sessionMarkerPath, _sessionStarted.ToString("O"));
-            _log.LogInformation("Session ouverte — marqueur écrit, durée suivie jusqu'à l'arrêt");
-        }
-        catch (Exception ex)
-        {
-            _log.LogWarning(ex, "Marqueur de session indisponible — détection d'arrêt anormal désactivée");
-        }
-    }
-
-    /// <summary>Fin de session : retire le marqueur, trace la durée et vide le journal (listelog §3.2).</summary>
-    private void EndSession(string reason)
-    {
-        if (_sessionEnded)
-            return;
-
-        _sessionEnded = true;
-        try
-        {
-            if (_sessionMarkerPath is not null && File.Exists(_sessionMarkerPath))
-                File.Delete(_sessionMarkerPath);
-        }
-        catch
-        {
-            // Le marqueur restant sera lu comme arrêt anormal au prochain lancement.
-        }
-
-        var duration = _sessionStarted == default
-            ? 0
-            : Math.Round((DateTimeOffset.Now - _sessionStarted).TotalSeconds);
-        Log.Information("Session terminée ({Reason}, durée {Seconds} s)", reason, duration);
-        Log.CloseAndFlush();
-    }
-
-    private void OnDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e)
-    {
-        try
-        {
-            var exception = e.ExceptionObject as Exception
-                ?? new Exception(e.ExceptionObject?.ToString() ?? "exception inconnue");
-            Log.Fatal(exception, "Exception domaine non gérée (IsTerminating={Terminating})", e.IsTerminating);
-            Log.CloseAndFlush();
-        }
-        catch
-        {
-            // Éviter une boucle fatale sur le logging
-        }
-    }
-
-    private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
-    {
-        try
-        {
-            Log.Error(e.Exception, "Tâche non observée ({Count} exception(s))", e.Exception.InnerExceptions.Count);
-            e.SetObserved();
-        }
-        catch
-        {
-            // Éviter une boucle fatale sur le logging
-        }
-    }
-
-    /// <summary>Contexte système compact au démarrage (listelog §3.3) — aucune donnée personnelle.</summary>
+    /// <summary>Une seule ligne système : disque, écrans, GPU. Pas de chemin ni de nom de machine.</summary>
     private void LogSystemContext()
     {
         try
         {
-            var isAdmin = new System.Security.Principal.WindowsPrincipal(
-                System.Security.Principal.WindowsIdentity.GetCurrent())
-                .IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
-
-            _log.LogInformation(
-                "Système : {Os}, process {ProcArch}, .NET {NetVersion}, CPU {Cores} cœurs, RAM {RamMo} Mo, admin={Admin}, locale={Locale}",
-                Environment.OSVersion.VersionString,
-                Environment.Is64BitProcess ? "x64" : "x86",
-                Environment.Version,
-                Environment.ProcessorCount,
-                GC.GetGCMemoryInfo().TotalAvailableMemoryBytes / (1024 * 1024),
-                isAdmin,
-                System.Globalization.CultureInfo.CurrentCulture.Name);
+            var gpu = GpuProbe.TryDescribe(Log.Logger);
+            var displays = DisplaySummary.Describe(Log.Logger);
+            SystemContext.LogAtStartup(Log.Logger, AppDataPaths.Root, displays, gpu);
         }
         catch (Exception ex)
         {
-            _log.LogWarning(ex, "Contexte système indisponible");
+            _log.LogWarning(
+                ex,
+                "Contexte système indisponible {EventCode} {Category} {Result}",
+                "CLIP-SYS-002",
+                "system",
+                "degrade");
+        }
+    }
+
+    private void AttachShutdownHook(IntPtr hwnd)
+    {
+        _shutdownHook?.Dispose();
+        _shutdownHook = HostShutdownHook.TryAttach(hwnd, OnWindowsShutdown);
+        if (_shutdownHook is null)
+        {
+            _log.LogWarning(
+                "Accroche arrêt Windows indisponible {EventCode} {Category} {Result}",
+                "CLIP-LIFE-WIN",
+                "cycle",
+                "degrade");
+        }
+    }
+
+    private void OnWindowsShutdown()
+    {
+        try
+        {
+            Breadcrumbs.Add("arrêt Windows");
+            _log.LogInformation(
+                "Arrêt Windows {EventCode} {Category} {Result}",
+                "CLIP-LIFE-WIN",
+                "cycle",
+                "arret");
+            if (_session is { IsOpen: true })
+                _session.Close("Arrêt Windows", 0);
+        }
+        catch
+        {
+            // Filet anti-boucle pendant l'arrêt de la session Windows.
         }
     }
 
     private void StartConfiguredApp(ISettingsService settings)
     {
+        // Idempotent : déjà armé tôt dans OnLaunched pour le chemin configuré ;
+        // appel effectif ici pour la transition FirstConfig → app configurée.
         StartClipboardPipeline();
         var history = Services.GetRequiredService<HistoryViewModel>();
         history.RequestOpenSettings = () => Dispatch(ShowSettingsWindow);
@@ -224,6 +200,32 @@ public partial class App : Application
         _updates.CleanExitRequested = () => Dispatch(() => ExitApp("mise à jour lancée"));
         _updateBanner = Services.GetRequiredService<UpdateBannerViewModel>();
         _ = Task.Run(() => _updateBanner.PrepareAsync());
+
+        // Chemin FirstConfig : l'init s'achève ici → rattrapage presse-papiers
+        // (le chemin configuré le fait en fin de OnLaunched, après tout le setup).
+        CaptureStartupBacklog();
+    }
+
+    /// <summary>
+    /// Rattrapage post-initialisation (BUG-5 testeur) : relit une fois le presse-papiers
+    /// courant pour ne rater aucune copie faite pendant l'init. Sans doublon : la dédup
+    /// par hash du store ignore le contenu déjà présent en tête d'historique.
+    /// </summary>
+    private void CaptureStartupBacklog()
+    {
+        try
+        {
+            var listener = Services.GetRequiredService<IClipboardListener>();
+            if (!listener.IsListening)
+                return;
+
+            _log.LogInformation("Rattrapage presse-papiers post-initialisation");
+            listener.CaptureOnce();
+        }
+        catch (Exception ex)
+        {
+            _log.LogWarning(ex, "Rattrapage presse-papiers impossible");
+        }
     }
 
     private void OnPeerActivated()
@@ -251,6 +253,7 @@ public partial class App : Application
         var hwnd = WindowNative.GetWindowHandle(window);
         NativeMethods.ShowWindow(hwnd, 0);
         window.AppWindow.IsShownInSwitchers = true;
+        AttachShutdownHook(hwnd);
     }
 
     private void StartTray()
@@ -268,8 +271,21 @@ public partial class App : Application
 
     private void ShowHistoryOverlay()
     {
-        _log.LogInformation("Overlay historique demandé (raccourci / tray / réveil)");
-        Services.GetRequiredService<IHistoryOverlayService>().Toggle();
+        try
+        {
+            _log.LogInformation("Overlay historique demandé (raccourci / tray / réveil)");
+            Breadcrumbs.Add("overlay ouvert");
+            Services.GetRequiredService<IHistoryOverlayService>().Toggle();
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(
+                ex,
+                "Ouverture de l'overlay impossible {EventCode} {Category} {Result}",
+                "CLIP-UI-OVERLAY",
+                "erreur",
+                "echec");
+        }
     }
 
     private void ShowSettingsWindow()
@@ -278,6 +294,7 @@ public partial class App : Application
             return;
 
         _log.LogInformation("Réglages affichés (tray / engrenage overlay)");
+        Breadcrumbs.Add("réglages affichés");
         var hwnd = WindowNative.GetWindowHandle(_settingsWindow);
         NativeMethods.ShowWindow(hwnd, 9);
         NativeMethods.SetForegroundWindow(hwnd);
@@ -310,6 +327,7 @@ public partial class App : Application
     private void ExitApp(string reason = "menu tray")
     {
         _log.LogInformation("Fermeture demandée ({Reason})", reason);
+        Breadcrumbs.Add("fermeture");
         try
         {
             if (_settingsWindow is MainWindow main)
@@ -323,7 +341,10 @@ public partial class App : Application
             _log.LogWarning(ex, "Nettoyage incomplet à la fermeture — sortie quand même");
         }
 
-        EndSession("Quitter (" + reason + ")");
+        if (_session is { IsOpen: true })
+            _session.Close("Quitter (" + reason + ")", 0);
+        else
+            CrashHandlers.OnProcessExit();
         Exit();
     }
 
@@ -358,13 +379,18 @@ public partial class App : Application
     {
         if (_uiDispatcher is null || _uiDispatcher.HasThreadAccess)
             action();
-        else
-            _uiDispatcher.TryEnqueue(() => action());
+        else if (!_uiDispatcher.TryEnqueue(() => action()))
+            _log.LogError(
+                "TryEnqueue a échoué {EventCode} {Category} {Result}",
+                "CLIP-UI-ENQUEUE",
+                "erreur",
+                "echec");
     }
 
     private void ShowFirstConfig()
     {
         _log.LogInformation("Ouverture configuration initiale (post-install)");
+        Breadcrumbs.Add("configuration initiale");
         var vm = Services.GetRequiredService<FirstConfigViewModel>();
         var window = new FirstConfigWindow(
             vm,
@@ -387,10 +413,21 @@ public partial class App : Application
         };
         _settingsWindow = window;
         window.Activate();
+        AttachShutdownHook(WindowNative.GetWindowHandle(window));
     }
 
+    private bool _pipelineStarted;
+
+    /// <summary>
+    /// Démarre store + écoute presse-papiers (idempotent). Appelé le plus tôt possible
+    /// au lancement (BUG-5 testeur : armer l'écoute avant l'init lourde).
+    /// </summary>
     private void StartClipboardPipeline()
     {
+        if (_pipelineStarted)
+            return;
+        _pipelineStarted = true;
+
         try
         {
             var store = Services.GetRequiredService<IClipboardHistoryStore>();
@@ -405,30 +442,17 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
+            _pipelineStarted = false; // nouvelle tentative possible (fin de FirstConfig)
             _log.LogError(ex, "Échec démarrage pipeline clipboard");
         }
     }
 
-    private static ServiceProvider ConfigureServices()
+    private ServiceProvider ConfigureServices()
     {
         AppDataPaths.EnsureMigrated();
-        var logDir = Path.Combine(AppDataPaths.Root, "logs");
-        Directory.CreateDirectory(logDir);
-
-        // Session ID par lancement + App/Version en propriété globale (listelog §1.2, §1.3)
-        var version = typeof(App).Assembly.GetName().Version?.ToString() ?? "?";
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
-            .Enrich.WithProperty("App", "XtremClipboard")
-            .Enrich.WithProperty("Version", version)
-            .Enrich.WithProperty("Session", Guid.NewGuid().ToString("N"))
-            .WriteTo.File(
-                Path.Combine(logDir, "xtrem-clipboard-.log"),
-                outputTemplate:
-                    "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext:l}: {Message:lj} {Properties:j}{NewLine}{Exception}",
-                rollingInterval: RollingInterval.Day,
-                retainedFileCountLimit: 14)
-            .CreateLogger();
+        var logging = LogBootstrap.Configure(Path.Combine(AppDataPaths.Root, "logs"));
+        _session = logging.Session;
+        Log.Logger = logging.Logger;
 
         Log.Information("Journal initialisé — rotation quotidienne, 14 fichiers conservés");
 
@@ -443,6 +467,7 @@ public partial class App : Application
         services.AddSingleton<IUpdateService, UpdateService>();
         services.AddSingleton<UpdateBannerViewModel>();
         services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddSingleton<IOcrService, OcrService>();
         services.AddSingleton<IHotkeyService, HotkeyService>();
         services.AddSingleton<IWindowsClipboardHistoryService, WindowsClipboardHistoryService>();
         services.AddSingleton<IWinVSuppressService, WinVSuppressService>();
@@ -465,13 +490,15 @@ public partial class App : Application
     {
         try
         {
-            Log.Fatal(e.Exception, "Exception non gérée UI");
+            CrashHandlers.HandleUiFault(_session, e.Exception, Log.Logger);
         }
         catch
         {
-            // Éviter une boucle fatale sur le logging
+            // Filet anti-boucle : le journal ne doit pas relancer l'exception UI.
         }
 
+        // Handled reste true : pas de chemin de sortie dédié, le tray ne meurt pas
+        // sur un défaut XAML localisé (y compris 0x800710DD).
         e.Handled = true;
     }
 }

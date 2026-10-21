@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Media;
 using WinRT.Interop;
 using XtremClipboard.Models;
 using XtremClipboard.Services;
+using XtremClipboard.Services.Logging;
 using XtremClipboard.Services.Native;
 using XtremClipboard.ViewModels;
 
@@ -113,41 +114,55 @@ public sealed partial class MainWindow : Window
 
     private async void PickExclusion_Click(object sender, RoutedEventArgs e)
     {
-        var apps = ViewModel.ListVisibleApps();
-        if (apps.Count == 0)
-            return;
-
-        _logger.LogInformation("Dialogue exclusion ouvert ({Count} app(s) visibles)", apps.Count);
-        var list = new ListView
+        try
         {
-            ItemsSource = apps,
-            SelectionMode = ListViewSelectionMode.Single,
-            MaxHeight = 360,
-            Width = 420
-        };
-        if (Application.Current.Resources.TryGetValue("SolidBackgroundFillColorBaseBrush", out var brush) && brush is Brush fill)
-            list.Background = fill;
-        list.SelectedIndex = 0;
+            var apps = ViewModel.ListVisibleApps();
+            if (apps.Count == 0)
+                return;
 
-        var dialog = new ContentDialog
-        {
-            Title = "Exclure une application",
-            Content = list,
-            PrimaryButtonText = "Exclure",
-            CloseButtonText = "Annuler",
-            DefaultButton = ContentDialogButton.Primary,
-            XamlRoot = Content.XamlRoot
-        };
+            _logger.LogInformation("Dialogue exclusion ouvert ({Count} app(s) visibles)", apps.Count);
+            Breadcrumbs.Add("dialogue exclusion");
+            var list = new ListView
+            {
+                ItemsSource = apps,
+                SelectionMode = ListViewSelectionMode.Single,
+                MaxHeight = 360,
+                Width = 420
+            };
+            if (Application.Current.Resources.TryGetValue("SolidBackgroundFillColorBaseBrush", out var brush) && brush is Brush fill)
+                list.Background = fill;
+            list.SelectedIndex = 0;
 
-        var result = await dialog.ShowAsync();
-        if (result == ContentDialogResult.Primary && list.SelectedItem is VisibleWindowApp app)
-        {
-            _logger.LogInformation("Dialogue exclusion : {Process} choisi", app.ProcessName);
-            ViewModel.AddVisibleApp(app);
+            var dialog = new ContentDialog
+            {
+                Title = "Exclure une application",
+                Content = list,
+                PrimaryButtonText = "Exclure",
+                CloseButtonText = "Annuler",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = Content.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary && list.SelectedItem is VisibleWindowApp app)
+            {
+                _logger.LogInformation("Dialogue exclusion : {Process} choisi", app.ProcessName);
+                ViewModel.AddVisibleApp(app);
+            }
+            else
+            {
+                _logger.LogDebug("Dialogue exclusion annulé");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            _logger.LogDebug("Dialogue exclusion annulé");
+            _logger.LogError(
+                ex,
+                "Dialogue exclusion impossible {EventCode} {Category} {Result}",
+                "CLIP-EXCL-PICK",
+                "usage",
+                "echec");
+            ViewModel.StatusText = "Impossible d'afficher le dialogue d'exclusion.";
         }
     }
 }
